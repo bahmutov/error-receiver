@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Error send</title>
+  <script>
+    // raygun snippet from https://github.com/MindscapeHQ/raygun4js
+    !function(a,b,c,d,e,f,g,h){a.RaygunObject=e,a[e]=a[e]||function(){
+    (a[e].o=a[e].o||[]).push(arguments)},f=b.createElement(c),g=b.getElementsByTagName(c)[0],
+    f.async=1,f.src=d,g.parentNode.insertBefore(f,g),h=a.onerror,a.onerror=function(b,c,d,f,g){
+    h&&h(b,c,d,f,g),g||(g=new Error(b)),a[e].q=a[e].q||[],a[e].q.push({
+    e:g})}}(window,document,"script","https://cdn.raygun.io/raygun4js/raygun.js","rg4js");
+  </script>
+  <script>
+    rg4js('apiKey', 'demo-api-key');
+    rg4js('enableCrashReporting', true);
+    rg4js('options', {
+      apiUrl: 'http://localhost:3004/crash'
+    });
+  </script>
+  <style>
+  #example {
+    margin: 10px 0px;
+    display: block;
+    white-space: pre;
+    font-family: monospace;
+  }
+  </style>
+</head>
+<body>
+<h2>Raygun sending error to our server</h2>
+<p>
+Uses <a href="https://github.com/MindscapeHQ/raygun4js">raygun4js</a> library
+to send caught JavaScript errors to our server
+<a href="https://github.com/bahmutov/error-receiver">error-receiver</a>.
+</p>
+<script src="https://rawgit.com/bahmutov/console-log-div/master/console-log-div.js"></script>
+<script id="example">
+  throw new Error('This is wrong');
+</script>
+</body>
+</html>

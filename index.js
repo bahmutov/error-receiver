@@ -4,7 +4,9 @@ var http = require('http');
 var url = require('url');
 
 var allowedApiKey = config.get('apiKey');
-console.log('allowed api key "%s"', allowedApiKey);
+var allowedApiUrl = config.get('apiUrl');
+console.log('allowed api key "%s" at end point "%s',
+  allowedApiKey, allowedApiUrl);
 
 var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
@@ -17,16 +19,18 @@ function respondToInvalid(res) {
 function isValid(req, parsed) {
   return req.method === 'POST' &&
     parsed &&
+    parsed.pathname === allowedApiUrl &&
     parsed.query &&
-    parsed.query.apiKey === allowedApiKey;
+    parsed.query.apikey === allowedApiKey;
 }
 
 http.createServer(function (req, res) {
   var parsed = url.parse(req.url, true);
-  console.log('%s - %s query', req.method, parsed.href, parsed.query);
   if (!isValid(req, parsed)) {
+    console.log('invalid %s - %s query', req.method, parsed.href, parsed.query);
     return respondToInvalid(res);
   }
+  console.log('%s - %s query', req.method, parsed.href, parsed.query);
   jsonParser(req, res, function () {
     console.log(req.body);
     res.writeHead(200, {'Content-Type': 'text/plain'});
