@@ -1,0 +1,29 @@
+{
+  "name": "error-receiver",
+  "version": "1.0.0",
+  "description": "Simple Node server that can receives exceptions sent by crash handlers (like Sentry, Raygun)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bahmutov/error-receiver.git"
+  },
+  "keywords": [
+    "error",
+    "crash",
+    "reporter",
+    "handler",
+    "server",
+    "api",
+    "sentry",
+    "raygun"
+  ],
+  "author": "Gleb Bahmutov <gleb.bahmutov@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bahmutov/error-receiver/issues"
+  },
+  "homepage": "https://github.com/bahmutov/error-receiver#readme"
+}
