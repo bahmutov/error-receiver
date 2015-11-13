@@ -33,7 +33,12 @@ http.createServer(function (req, res) {
   console.log('%s - %s query', req.method, parsed.href, parsed.query);
   jsonParser(req, res, function () {
     console.log(req.body);
-    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.writeHead(200, {
+      'Content-Type': 'text/plain',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    });
     res.end('Hello there\n');
   });
 }).listen(config.get('PORT'), '127.0.0.1');
