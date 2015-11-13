@@ -2,7 +2,7 @@
 
 > Simple Node server that can receives exceptions sent by crash handlers (like Raygun4js)
 
-Read description in []() blog post
+Read description in [Stand your own crash server][blog post] blog post
 
 Install
 
@@ -73,3 +73,4 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 
+[blog post]: http://glebbahmutov.com/blog/stand-your-own-crash-server/
