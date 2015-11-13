@@ -42,5 +42,9 @@
   "devDependencies": {
     "git-issues": "1.1.0",
     "pre-git": "1.2.11"
+  },
+  "dependencies": {
+    "body-parser": "1.14.1",
+    "nconf": "0.8.2"
   }
 }
