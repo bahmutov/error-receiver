@@ -8,8 +8,10 @@ var allowedApiUrl = config.get('apiUrl');
 console.log('allowed api key "%s" at end point "%s',
   allowedApiKey, allowedApiUrl);
 
+// handle data encoded in json or text body
 var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
+var textParser = bodyParser.text();
 
 function respondToInvalid(res) {
   res.writeHead(400, {'Content-Type': 'text/plain'});
@@ -24,6 +26,20 @@ function isValid(req, parsed) {
     parsed.query.apikey === allowedApiKey;
 }
 
+function saveCrashReport(req) {
+  console.log(req.body);
+}
+
+function writeResponse(res) {
+  res.writeHead(200, {
+    'Content-Type': 'text/plain',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST',
+    'Access-Control-Allow-Headers': 'Content-Type'
+  });
+  res.end('Hello there\n');
+}
+
 http.createServer(function (req, res) {
   var parsed = url.parse(req.url, true);
   if (!isValid(req, parsed)) {
@@ -32,14 +48,10 @@ http.createServer(function (req, res) {
   }
   console.log('%s - %s query', req.method, parsed.href, parsed.query);
   jsonParser(req, res, function () {
-    console.log(req.body);
-    res.writeHead(200, {
-      'Content-Type': 'text/plain',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST',
-      'Access-Control-Allow-Headers': 'Content-Type'
+    textParser(req, res, function () {
+      saveCrashReport(req);
+      writeResponse(res);
     });
-    res.end('Hello there\n');
   });
 }).listen(config.get('PORT'), '127.0.0.1');
 console.log('%s running on port %d', pkg.name, config.get('PORT'));
