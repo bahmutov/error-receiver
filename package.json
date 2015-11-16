@@ -4,7 +4,8 @@
   "main": "src/error-receiver.js",
   "version": "0.0.0-semantic-release",
   "scripts": {
-    "test": "eslint index.js src/**/*.js",
+    "test": "mocha src/**/*-spec.js",
+    "lint": "eslint index.js src/**/*.js",
     "issues": "git-issues",
     "commit": "git-issues && commit-wizard",
     "watch": "nodemon",
@@ -35,6 +36,7 @@
     "pre-git": {
       "commit-msg": "validate-commit-msg",
       "pre-commit": [
+        "npm run lint",
         "npm test"
       ],
       "pre-push": [],
@@ -48,6 +50,7 @@
   "devDependencies": {
     "eslint": "1.9.0",
     "git-issues": "1.1.0",
+    "mocha": "2.3.4",
     "nodemon": "1.8.1",
     "parallelshell": "2.0.0",
     "pre-git": "1.2.11",

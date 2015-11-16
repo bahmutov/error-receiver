@@ -5,12 +5,13 @@ var url = require('url');
 var la = require('lazy-ass');
 var check = require('check-more-types');
 
-var allowedApiKey = config.get('apiKey') ||
-  config.get('apikey') ||
-  config.get('api-key');
+var names = config.get('apiKeyNames');
+la(check.array(names), 'expected list of names', names);
+
+var allowedApiKey = config.get('apiKeyValue');
 var allowedApiUrl = config.get('apiUrl');
-log('allowed api key "%s" at end point "%s',
-  allowedApiKey, allowedApiUrl);
+log('allowed api key "%s" at end point "%s under names',
+  allowedApiKey, allowedApiUrl, names);
 
 // handle data encoded in json or text body
 var bodyParser = require('body-parser');
@@ -31,10 +32,14 @@ function isErrorRequest(req, parsed) {
     parsed.pathname === allowedApiUrl;
 }
 
+var findFirstKey = require('./find-first-key');
+la(check.fn(findFirstKey), 'missing find first key', findFirstKey);
+var findFirstApiKey = findFirstKey.bind(null, names);
+
 function getApiKey(parsed) {
   return parsed &&
     parsed.query &&
-    (parsed.query.apikey || parsed.query.apiKey || parsed.query['api-key']);
+    findFirstApiKey(parsed.query);
 }
 
 function verifyRequest(req, res, parsed) {
