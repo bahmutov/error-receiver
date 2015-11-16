@@ -21,6 +21,6 @@ console.log('%s running on %s:%d', pkg.name, config.get('HOST'), config.get('POR
 
 var httpie = 'https://github.com/jkbrzt/httpie';
 console.log('test the error receiver from CLI using httpie %s', httpie);
-console.log('http POST %s:%s/crash/entries?apikey=demo-api-key key=value',
-  config.get('HOST'), config.get('PORT'));
+console.log('http POST %s:%s%s?apikey=demo-api-key key=value',
+  config.get('HOST'), config.get('PORT'), config.get('apiUrl'));
 console.log('or opening test/index.html in the browser');
