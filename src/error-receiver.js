@@ -27,11 +27,6 @@ function isValid(req, parsed) {
     parsed.query.apikey === allowedApiKey;
 }
 
-function saveCrashReport(req) {
-  console.log('crash info');
-  console.log(req.body);
-}
-
 function writeResponse(res) {
   res.writeHead(200, {
     'Content-Type': 'text/plain',
@@ -41,6 +36,9 @@ function writeResponse(res) {
   });
   res.end('crash error received\n');
 }
+
+var events = require('events');
+var crashEmitter = new events.EventEmitter();
 
 /* eslint no-console:0 */
 function errorReceiver(req, res) {
@@ -52,10 +50,13 @@ function errorReceiver(req, res) {
 
   jsonParser(req, res, function () {
     textParser(req, res, function () {
-      saveCrashReport(req);
       writeResponse(res);
+      crashEmitter.emit('crash', JSON.parse(req.body));
     });
   });
 }
 
-module.exports = errorReceiver;
+module.exports = {
+  middleware: errorReceiver,
+  crashEmitter: crashEmitter
+};

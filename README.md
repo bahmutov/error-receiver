@@ -14,7 +14,7 @@ Install
     npm install error-receiver
     cd node_modules/error-receiver
 
-Run
+Run example server
 
     node index.js
 
@@ -40,6 +40,20 @@ The errors will be sent using POST method.
 
 To better specify options, set all desired options on `global.config` object,
 which is used together with `nconf defaults` object.
+
+## Use crash middleware as a module
+
+The received errors will be emitted from an event emitter
+
+```js
+var errorReceiver = require('error-receiver');
+// use middleware (req, res) from Express or plain http server
+app.use(errorReceiver.middleware);
+// listen for errors
+errorReceiver.crashEmitter.on('crash', function (crashInfo) {
+  // do something
+});
+```
 
 ### Small print
 
