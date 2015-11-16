@@ -1,6 +1,7 @@
 var la = require('lazy-ass');
 var check = require('check-more-types');
 
+/* global describe, it */
 describe('find first key', function () {
   var find = require('./find-first-key');
 
