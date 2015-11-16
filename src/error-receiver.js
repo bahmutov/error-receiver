@@ -51,7 +51,8 @@ function errorReceiver(req, res) {
   jsonParser(req, res, function () {
     textParser(req, res, function () {
       writeResponse(res);
-      crashEmitter.emit('crash', JSON.parse(req.body));
+      var json = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+      crashEmitter.emit('crash', json);
     });
   });
 }

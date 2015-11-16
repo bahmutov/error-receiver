@@ -49,6 +49,7 @@
     "git-issues": "1.1.0",
     "nodemon": "1.8.1",
     "pre-git": "1.2.11",
+    "request-promise": "1.0.2",
     "semantic-release": "^4.3.5"
   },
   "dependencies": {
