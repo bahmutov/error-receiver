@@ -31,7 +31,14 @@ function isErrorRequest(req, parsed) {
     parsed.pathname === allowedApiUrl;
 }
 
+function getApiKey(parsed) {
+  return parsed &&
+    parsed.query &&
+    (parsed.query.apikey || parsed.query.apiKey || parsed.query['api-key']);
+}
+
 function verifyRequest(req, res, parsed) {
+  log(parsed && parsed.query);
   if (req.method !== 'POST') {
     respondToInvalid('invalid method', res);
     return false;
@@ -48,7 +55,11 @@ function verifyRequest(req, res, parsed) {
     respondToInvalid('Invalid query', res);
     return false;
   }
-  var apiKey = parsed.query.apikey || parsed.query.apiKey;
+  var apiKey = getApiKey(parsed);
+  if (!apiKey) {
+    respondToInvalid('Missing api key', res);
+    return false;
+  }
   if (apiKey !== allowedApiKey) {
     respondToInvalid('Invalid api key', res);
     return false;
@@ -88,6 +99,10 @@ function errorReceiver(req, res, next) {
 
       var json = typeof req.body === 'string' ?
         JSON.parse(req.body) : req.body;
+      la(check.object(json), 'could not get crash info object', json);
+      var apiKey = getApiKey(parsed);
+      la(check.unemptyString(apiKey), 'missing api key', parsed);
+      json.apiKey = apiKey;
       crashEmitter.emit('crash', json);
     });
   });
