@@ -76,7 +76,7 @@ function errorReceiver(req, res, next) {
 
   if (!verifyRequest(req, res, parsed)) {
     console.log('invalid error request %s - %s query', req.method, parsed.href, parsed.query);
-    return check.fn(next) && next();
+    return;
   }
 
   jsonParser(req, res, function () {
