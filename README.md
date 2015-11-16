@@ -33,6 +33,9 @@ rg4js('options', {
 
 The errors will be sent using POST method.
 
+To better specify options, set all desired options on `global.config` object,
+which is used together with `nconf defaults` object.
+
 ### Small print
 
 Author: Gleb Bahmutov &copy; 2015
