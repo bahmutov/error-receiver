@@ -1,7 +1,7 @@
 {
   "name": "error-receiver",
   "description": "Simple Node server that can receives exceptions sent by crash handlers (like Sentry, Raygun)",
-  "main": "index.js",
+  "main": "src/error-receiver.js",
   "version": "0.0.0-semantic-release",
   "scripts": {
     "test": "eslint index.js src/**/*.js",
