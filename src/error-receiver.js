@@ -5,7 +5,9 @@ var url = require('url');
 var la = require('lazy-ass');
 var check = require('check-more-types');
 
-var allowedApiKey = config.get('apiKey');
+var allowedApiKey = config.get('apiKey') ||
+  config.get('apikey') ||
+  config.get('api-key');
 var allowedApiUrl = config.get('apiUrl');
 log('allowed api key "%s" at end point "%s',
   allowedApiKey, allowedApiUrl);
@@ -46,7 +48,8 @@ function verifyRequest(req, res, parsed) {
     respondToInvalid('Invalid query', res);
     return false;
   }
-  if (parsed.query.apikey !== allowedApiKey) {
+  var apiKey = parsed.query.apikey || parsed.query.apiKey;
+  if (apiKey !== allowedApiKey) {
     respondToInvalid('Invalid api key', res);
     return false;
   }
