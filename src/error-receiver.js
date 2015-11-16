@@ -2,6 +2,7 @@ var log = require('debug')('receiver');
 var config = require('./config');
 var url = require('url');
 
+var la = require('lazy-ass');
 var check = require('check-more-types');
 
 var allowedApiKey = config.get('apiKey');
@@ -14,11 +15,12 @@ var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
 var textParser = bodyParser.text();
 
-function respondToInvalid(res) {
+function respondToInvalid(reason, res) {
+  la(check.unemptyString(reason), 'invalid reason', reason);
   res.writeHead(400, {
     'Content-Type': 'text/plain'
   });
-  res.end('Invalid crash error request\n');
+  res.end(reason);
 }
 
 function isErrorRequest(req, parsed) {
@@ -27,15 +29,32 @@ function isErrorRequest(req, parsed) {
     parsed.pathname === allowedApiUrl;
 }
 
-function isValid(req, parsed) {
-  return req.method === 'POST' &&
-    parsed &&
-    parsed.pathname === allowedApiUrl &&
-    parsed.query &&
-    parsed.query.apikey === allowedApiKey;
+function verifyRequest(req, res, parsed) {
+  if (req.method !== 'POST') {
+    respondToInvalid('invalid method', res);
+    return false;
+  }
+  if (check.not.object(parsed)) {
+    respondToInvalid('Invalid parsed url', res);
+    return false;
+  }
+  if (parsed.pathname !== allowedApiUrl) {
+    respondToInvalid('Invalid request url', res);
+    return false;
+  }
+  if (check.not.object(parsed.query)) {
+    respondToInvalid('Invalid query', res);
+    return false;
+  }
+  if (parsed.query.apikey !== allowedApiKey) {
+    respondToInvalid('Invalid api key', res);
+    return false;
+  }
+
+  return true;
 }
 
-function writeResponse(res) {
+function success(res) {
   res.writeHead(200, {
     'Content-Type': 'text/plain',
     'Access-Control-Allow-Origin': '*',
@@ -55,15 +74,17 @@ function errorReceiver(req, res, next) {
     return check.fn(next) && next();
   }
 
-  if (!isValid(req, parsed)) {
+  if (!verifyRequest(req, res, parsed)) {
     console.log('invalid error request %s - %s query', req.method, parsed.href, parsed.query);
-    return respondToInvalid(res);
+    return check.fn(next) && next();
   }
 
   jsonParser(req, res, function () {
     textParser(req, res, function () {
-      writeResponse(res);
-      var json = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+      success(res);
+
+      var json = typeof req.body === 'string' ?
+        JSON.parse(req.body) : req.body;
       crashEmitter.emit('crash', json);
     });
   });
