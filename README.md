@@ -2,6 +2,11 @@
 
 > Simple Node server that can receives exceptions sent by crash handlers (like Raygun4js)
 
+[![NPM][error-receiver-icon] ][error-receiver-url]
+
+[![Build status][error-receiver-ci-image] ][error-receiver-ci-url]
+[![semantic-release][semantic-image] ][semantic-url]
+
 Read description in [Stand your own crash server][blog post] blog post
 
 Install
@@ -77,3 +82,10 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 
 [blog post]: http://glebbahmutov.com/blog/stand-your-own-crash-server/
+
+[error-receiver-icon]: https://nodei.co/npm/error-receiver.png?downloads=true
+[error-receiver-url]: https://npmjs.org/package/error-receiver
+[error-receiver-ci-image]: https://travis-ci.org/bahmutov/error-receiver.png?branch=master
+[error-receiver-ci-url]: https://travis-ci.org/bahmutov/error-receiver
+[semantic-image]: https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg
+[semantic-url]: https://github.com/semantic-release/semantic-release

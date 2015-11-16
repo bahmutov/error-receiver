@@ -1,17 +1,18 @@
 {
   "name": "error-receiver",
-  "version": "1.0.0",
   "description": "Simple Node server that can receives exceptions sent by crash handlers (like Sentry, Raygun)",
   "main": "index.js",
+  "version": "0.0.0-semantic-release",
   "scripts": {
     "test": "eslint index.js src/**/*.js",
     "issues": "git-issues",
     "commit": "git-issues && commit-wizard",
-    "watch": "nodemon"
+    "watch": "nodemon",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bahmutov/error-receiver.git"
+    "url": "https://github.com/bahmutov/error-receiver.git"
   },
   "keywords": [
     "error",
@@ -32,7 +33,9 @@
   "config": {
     "pre-git": {
       "commit-msg": "validate-commit-msg",
-      "pre-commit": [],
+      "pre-commit": [
+        "npm test"
+      ],
       "pre-push": [],
       "post-commit": [],
       "post-merge": []
@@ -45,7 +48,8 @@
     "eslint": "1.9.0",
     "git-issues": "1.1.0",
     "nodemon": "1.8.1",
-    "pre-git": "1.2.11"
+    "pre-git": "1.2.11",
+    "semantic-release": "^4.3.5"
   },
   "dependencies": {
     "body-parser": "1.14.1",
