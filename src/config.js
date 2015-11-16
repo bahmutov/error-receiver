@@ -17,7 +17,8 @@ nconf.argv()
   .env()
   .defaults(defaults);
 
-console.log('settings for error-receiver api %s:%d path %s',
-  nconf.get('HOST'), nconf.get('PORT'), nconf.get('apiKey'));
+console.log('settings for error-receiver api %s:%d path %s and api key name %s',
+  nconf.get('HOST'), nconf.get('PORT'),
+  nconf.get('apiUrl'), nconf.get('apiKey'));
 
 module.exports = nconf;

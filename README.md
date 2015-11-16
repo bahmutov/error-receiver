@@ -47,11 +47,28 @@ The received errors will be emitted from an event emitter
 
 ```js
 var errorReceiver = require('error-receiver');
-// use middleware (req, res) from Express or plain http server
+// use middleware (req, res, next) from Express or plain http server
 app.use(errorReceiver.middleware);
 // listen for errors
 errorReceiver.crashEmitter.on('crash', function (crashInfo) {
   // do something
+});
+```
+
+For example, in plain http server (see file [index.js](index.js))
+
+```js
+var errorReceiver = require('error-receiver');
+http.createServer(function (req, res) {
+  function send404() {
+    res.writeHead(404);
+    res.end(http.STATUS_CODES[404]);
+  }
+  errorReceiver.middleware(req, res, send404);
+}).listen(port, host);
+errorReceiver.crashEmitter.on('crash', function (crashInfo) {
+  console.log('received crash information');
+  console.log(JSON.stringify(crashInfo, null, 2));
 });
 ```
 

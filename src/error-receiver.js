@@ -2,6 +2,8 @@ var log = require('debug')('receiver');
 var config = require('./config');
 var url = require('url');
 
+var check = require('check-more-types');
+
 var allowedApiKey = config.get('apiKey');
 var allowedApiUrl = config.get('apiUrl');
 log('allowed api key "%s" at end point "%s',
@@ -17,6 +19,12 @@ function respondToInvalid(res) {
     'Content-Type': 'text/plain'
   });
   res.end('Invalid crash error request\n');
+}
+
+function isErrorRequest(req, parsed) {
+  return req.method === 'POST' &&
+    parsed &&
+    parsed.pathname === allowedApiUrl;
 }
 
 function isValid(req, parsed) {
@@ -41,8 +49,12 @@ var events = require('events');
 var crashEmitter = new events.EventEmitter();
 
 /* eslint no-console:0 */
-function errorReceiver(req, res) {
+function errorReceiver(req, res, next) {
   var parsed = url.parse(req.url, true);
+  if (!isErrorRequest(req, parsed)) {
+    return check.fn(next) && next();
+  }
+
   if (!isValid(req, parsed)) {
     console.log('invalid error request %s - %s query', req.method, parsed.href, parsed.query);
     return respondToInvalid(res);

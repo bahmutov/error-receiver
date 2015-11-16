@@ -4,7 +4,11 @@ var errorReceiver = require('./src/error-receiver');
 
 /* eslint no-console:0 */
 http.createServer(function (req, res) {
-  errorReceiver.middleware(req, res);
+  function send404() {
+    res.writeHead(404);
+    res.end(http.STATUS_CODES[404]);
+  }
+  errorReceiver.middleware(req, res, send404);
 }).listen(config.get('PORT'), config.get('HOST'));
 
 errorReceiver.crashEmitter.on('crash', function (crashInfo) {
