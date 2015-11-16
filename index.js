@@ -1,3 +1,4 @@
+var log = require('debug')('receiver');
 var config = require('./src/config');
 var pkg = require('./package.json');
 var http = require('http');
@@ -5,7 +6,7 @@ var url = require('url');
 
 var allowedApiKey = config.get('apiKey');
 var allowedApiUrl = config.get('apiUrl');
-console.log('allowed api key "%s" at end point "%s',
+log('allowed api key "%s" at end point "%s',
   allowedApiKey, allowedApiUrl);
 
 // handle data encoded in json or text body
@@ -40,6 +41,7 @@ function writeResponse(res) {
   res.end('Hello there\n');
 }
 
+/* eslint no-console:0 */
 http.createServer(function (req, res) {
   var parsed = url.parse(req.url, true);
   if (!isValid(req, parsed)) {
