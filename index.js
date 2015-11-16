@@ -14,4 +14,4 @@ var httpie = 'https://github.com/jkbrzt/httpie';
 console.log('test the error receiver from CLI using httpie %s', httpie);
 console.log('http POST %s:%s/crash/entries?apikey=demo-api-key key=value',
   config.get('HOST'), config.get('PORT'));
-console.log('or opening test/index.html in the browser')
+console.log('or opening test/index.html in the browser');
