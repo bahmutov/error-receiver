@@ -72,6 +72,21 @@ errorReceiver.crashEmitter.on('crash', function (crashInfo) {
 });
 ```
 
+## Validating API key
+
+You can validate a passed API key, even using a promise-returning function.
+Just pass the validation function as first argument to the middleware
+
+```js
+function validateApiKey(key) {
+  return key === 'secret value';
+  // or return a promise!
+}
+function send404() { ... }
+var errorReceiver = require('error-receiver');
+errorReceiver.middleware(validateApiKey, req, res, send404);
+```
+
 ### Small print
 
 Author: Gleb Bahmutov &copy; 2015

@@ -1,6 +1,17 @@
 var config = require('./src/config');
 var http = require('http');
 var errorReceiver = require('./src/error-receiver');
+var Promise = require('bluebird');
+
+function apiKeyValidator(key) {
+  console.log('checking api key %s', key);
+  if (key === 'demo-api-key') {
+    return Promise.resolve(true);
+  } else {
+    console.log('invalid api key %s', key);
+    return Promise.reject(new Error('invalid api key ' + key));
+  }
+}
 
 /* eslint no-console:0 */
 http.createServer(function (req, res) {
@@ -8,7 +19,7 @@ http.createServer(function (req, res) {
     res.writeHead(404);
     res.end(http.STATUS_CODES[404]);
   }
-  errorReceiver.middleware(req, res, send404);
+  errorReceiver.middleware(apiKeyValidator, req, res, send404);
 }).listen(config.get('PORT'), config.get('HOST'));
 
 errorReceiver.crashEmitter.on('crash', function (crashInfo) {

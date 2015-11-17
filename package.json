@@ -58,6 +58,7 @@
     "semantic-release": "^4.3.5"
   },
   "dependencies": {
+    "bluebird": "^3.0.5",
     "body-parser": "1.14.1",
     "check-more-types": "2.1.2",
     "debug": "2.2.0",

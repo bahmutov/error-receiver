@@ -1,6 +1,7 @@
 var log = require('debug')('receiver');
 var config = require('./config');
 var url = require('url');
+var Promise = require('bluebird');
 
 var la = require('lazy-ass');
 var check = require('check-more-types');
@@ -8,10 +9,9 @@ var check = require('check-more-types');
 var names = config.get('apiKeyNames');
 la(check.array(names), 'expected list of names', names);
 
-var allowedApiKey = config.get('apiKeyValue');
 var allowedApiUrl = config.get('apiUrl');
-log('allowed api key "%s" at end point "%s under names',
-  allowedApiKey, allowedApiUrl, names);
+log('allowed api key at end point "%s under names',
+  allowedApiUrl, names);
 
 // handle data encoded in json or text body
 var bodyParser = require('body-parser');
@@ -65,8 +65,8 @@ function verifyRequest(req, res, parsed) {
     respondToInvalid('Missing api key', res);
     return false;
   }
-  if (apiKey !== allowedApiKey) {
-    respondToInvalid('Invalid api key', res);
+  if (check.not.string(apiKey)) {
+    respondToInvalid('Malformed api key', res);
     return false;
   }
 
@@ -87,7 +87,14 @@ var events = require('events');
 var crashEmitter = new events.EventEmitter();
 
 /* eslint no-console:0 */
-function errorReceiver(req, res, next) {
+function errorReceiver(apiKeyValidator, req, res, next) {
+  if (check.not.fn(apiKeyValidator)) {
+    log('api key validator not passed in');
+    next = res;
+    res = req;
+    req = apiKeyValidator;
+  }
+
   var parsed = url.parse(req.url, true);
   if (!isErrorRequest(req, parsed)) {
     return check.fn(next) && next();
@@ -100,15 +107,35 @@ function errorReceiver(req, res, next) {
 
   jsonParser(req, res, function () {
     textParser(req, res, function () {
-      success(res);
-
-      var json = typeof req.body === 'string' ?
-        JSON.parse(req.body) : req.body;
-      la(check.object(json), 'could not get crash info object', json);
       var apiKey = getApiKey(parsed);
-      la(check.unemptyString(apiKey), 'missing api key', parsed);
-      json.apiKey = apiKey;
-      crashEmitter.emit('crash', json);
+
+      var start = Promise.resolve();
+
+      if (check.fn(apiKeyValidator)) {
+        start = start.then(function () {
+          return Promise.resolve(
+            apiKeyValidator(apiKey)
+          );
+        });
+      }
+
+      start.then(function () {
+        console.log('valid api key, saving crash information');
+        var json = typeof req.body === 'string' ?
+          JSON.parse(req.body) : req.body;
+        la(check.object(json), 'could not get crash info object', json);
+
+        la(check.unemptyString(apiKey), 'missing api key', parsed);
+        json.apiKey = apiKey;
+        crashEmitter.emit('crash', json);
+
+        success(res);
+      }).catch(function (err) {
+        console.log('problem', err,
+          'for', req.method, parsed.href, parsed.query);
+        respondToInvalid('Invalid api key', res);
+      });
+
     });
   });
 }

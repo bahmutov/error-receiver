@@ -10,6 +10,6 @@ rp({
   console.log(response);
 }, function (err) {
   console.error('error');
-  console.error(err);
+  console.error(err.message);
   process.exit(-1);
 });
