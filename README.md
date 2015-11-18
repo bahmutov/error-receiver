@@ -7,7 +7,7 @@
 [![Build status][error-receiver-ci-image] ][error-receiver-ci-url]
 [![semantic-release][semantic-image] ][semantic-url]
 
-Read description in [Stand your own crash server][blog post] blog post
+Read description in [Stand your own crash server][blog post] blog post.
 
 Install
 
